@@ -673,7 +673,13 @@ function loadRound() {
 
   showScreen('screen-game');
 
-  setTimeout(() => document.getElementById('user-guess').focus(), 100);
+  // On vérifie si l'appareil supporte le tactile
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+  if (!isTouchDevice) {
+    // Comportement sur PC : on donne le focus automatiquement
+    setTimeout(() => document.getElementById('user-guess').focus(), 100);
+  }
 
   // On pré-télécharge l'image du prochain round en arrière-plan
   const nextRound = currentRound + 1;
