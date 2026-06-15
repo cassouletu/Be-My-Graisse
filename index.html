@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Graisse</title>
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-hover: #059669;
+            --bg: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text: #1F2937;
+            --text-muted: #6B7280;
+            --error: #EF4444;
+            --score-color: #F59E0B;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #game-container {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 2rem;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+            margin-top: 1.5rem;
+            box-sizing: border-box;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-error {
+            background-color: #6B7280;
+        }
+
+        .select-wrapper {
+            text-align: left;
+            margin: 1rem 0;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            background-color: white;
+            color: var(--text);
+            outline: none;
+        }
+
+        .difficulty-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .difficulty-group button {
+            flex: 1;
+            background-color: #E5E7EB;
+            color: var(--text-muted);
+            padding: 0.6rem 0.2rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-radius: 8px;
+            margin-top: 0;
+            width: auto;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .difficulty-group button:hover {
+            background-color: #D1D5DB;
+        }
+
+        .difficulty-group button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .quit-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .btn-quit {
+            background: none;
+            color: #9CA3AF;
+            border: none;
+            font-size: 0.8rem;
+            font-weight: 400;
+            text-decoration: none;
+            width: auto;
+            margin: 0;
+            padding: 0.2rem 0.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .btn-quit:hover {
+            background: none;
+            color: var(--error);
+        }
+
+        .categories-title {
+            text-align: left;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            text-align: left;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            background: #F9FAFB;
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid #E5E7EB;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .category-item input {
+            margin-right: 0.5rem;
+            accent-color: var(--primary);
+        }
+
+        .score-progress-wrapper {
+            margin: 0.5rem 0 1.5rem 0;
+            text-align: left;
+        }
+
+        .score-progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .score-progress-container {
+            background-color: #E5E7EB;
+            border-radius: 9999px;
+            height: 10px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .score-progress-bar {
+            background-color: var(--score-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease-out;
+            border-radius: 9999px;
+        }
+
+        .product-img-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 1rem auto;
+            background: #FAFAFA;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border: 1px solid #E5E7EB;
+        }
+
+        .product-img-container::before {
+            content: "";
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #E5E7EB;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            z-index: 1;
+        }
+
+        .product-img {
+            position: relative;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.15s ease-in-out;
+            z-index: 2;
+            background: #FAFAFA;
+        }
+
+        .product-img.loaded {
+            opacity: 1;
+        }
+
+        .product-brand {
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin: -0.5rem 0 1rem 0;
+            letter-spacing: 0.05em;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1.1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            text-align: center;
+            box-sizing: border-box;
+            margin-top: 1rem;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        input[type="number"]::placeholder {
+            font-size: 0.95rem;
+            color: #9CA3AF;
+        }
+
+        .progress {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-align: left;
+            margin-bottom: 0.4rem;
+        }
+
+        .feedback-box {
+            background: #F9FAFB;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary);
+            text-align: left;
+        }
+
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-box {
+            background: #FEF2F2;
+            border: 1px solid #FEE2E2;
+            color: #991B1B;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: left;
+            font-size: 0.85rem;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    
+    <div id="screen-start" class="screen active">
+        <h1>Be My Graisse 🍖</h1>
+        <p>Devinez les calories de 5 aliments piochés au hasard selon vos préférences !</p>
+        
+        <div class="select-wrapper">
+            <label>Niveau de difficulté :</label>
+            <div class="difficulty-group">
+                <button type="button" id="btn-diff-easy" onclick="setDiff('easy')">👶 Facile</button>
+                <button type="button" id="btn-diff-normal" class="active" onclick="setDiff('normal')">⚖️ Normal</button>
+                <button type="button" id="btn-diff-hard" onclick="setDiff('hard')">🌶️ Difficile</button>
+            </div>
+        </div>
+
+        <div class="select-wrapper">
+            <label for="country-select">Origine des aliments (fonctionnalité pas testée) :</label>
+            <select id="country-select">
+                <option value="all">🌍 Tous (Monde entier)</option>
+                <option value="cc:fr">🇫🇷 France</option>
+                <option value="cc:be">🇧🇪 Belgique</option>
+                <option value="cc:ch">🇨🇭 Suisse</option>
+                <option value="cc:ca">🇨🇦 Canada</option>
+                <option value="cc:us">🇺🇸 États-Unis</option>
+                <option value="cc:de">🇩🇪 Allemagne</option>
+                <option value="cc:it">🇮🇹 Italie</option>
+                <option value="cc:es">🇪🇸 Espagne</option>
+                <option value="cc:gb">🇬🇧 Royaume-Uni</option>
+                <option value="cc:nl">🇳🇱 Pays-Bas</option>
+                <option value="cc:pt">🇵🇹 Portugal</option>
+                <option value="cc:jp">🇯🇵 Japon</option>
+                <option value="cc:mx">🇲🇽 Mexique</option>
+                <option value="cc:br">🇧🇷 Brésil</option>
+                <option value="cc:ma">🇲🇦 Maroc</option>
+                <option value="cc:dz">🇩🇿 Algérie</option>
+                <option value="cc:tn">🇹🇳 Tunisie</option>
+                <option value="cc:sen">🇸🇳 Sénégal</option>
+                <option value="cc:ci">🇨🇮 Côte d'Ivoire</option>
+                <option value="cc:au">🇦🇺 Australie</option>
+            </select>
+        </div>
+
+        <div class="categories-title">Catégories incluses (choisis ce que tu veux, ça marche pas) :</div>
+        <div class="categories-grid">
+            <label class="category-item"><input type="checkbox" name="category" value="en:beverages" checked> 🥤 Boissons</label>
+            <label class="category-item"><input type="checkbox" name="category" value="en:sweet-snacks" checked> 🍫 Snacks sucrés</label>
+            <label class="category-item"><input type="checkbox" name="category" value="en:salty-snacks" checked> 🥨 Snacks salés</label>
+            <label class="category-item"><input type="checkbox" name="category" value="en:dairies" checked> 🧀 P. Laitiers</label>
+            <label class="category-item"><input type="checkbox" name="category" value="en:meats" checked> 🥩 Viandes</label>
+            <label class="category-item"><input type="checkbox" name="category" value="en:fruits" checked> 🍎 Fruits</label>
+            <label class="category-item"><input type="checkbox" name="category" value="en:vegetables" checked> 🥕 Légumes</label>
+            <label class="category-item"><input type="checkbox" name="category" value="en:meals" checked> 🍕 Plats préparés</label>
+        </div>
+
+        <button onclick="startGame()">C'est parti !</button>
+    </div>
+
+    <div id="screen-loading" class="screen">
+        <h3>Chargement...</h3>
+        <p id="loading-status" style="font-size: 0.95rem; color: var(--text-muted);">Sous-titre du chargement.</p>
+        <div class="loader"></div>
+    </div>
+
+    <div id="screen-error" class="screen">
+        <h2 style="color: var(--error);">Message d'erreur ❌</h2>
+        <div class="error-box" id="error-details">Description de l'erreur.</div>
+        <button class="btn-error" onclick="showScreen('screen-start')">Réessayer</button>
+    </div>
+
+    <div id="screen-game" class="screen">
+        <div class="progress" id="game-progress">Manche 1 / 5</div>
+        <div class="score-progress-container" style="margin-bottom: 1.5rem;">
+            <div id="score-bar-game" class="score-progress-bar"></div>
+        </div>
+
+        <h2 id="product-name" style="margin: 0.5rem 0;">Nom de l'aliment</h2>
+        <div id="product-brand" class="product-brand">Marque</div>
+        
+        <div class="product-img-container">
+            <img id="product-image" class="product-img" src="" alt="Aliment" onerror="this.src='https://openfoodfacts.org/images/icons/dist/packaging.svg'">
+        </div>
+        
+        <input type="number" id="user-guess" placeholder="Calories pour 100g (en kcal)" min="0" onkeydown="if(event.key==='Enter') validateGuess()">
+        <button onclick="validateGuess()">Valider</button>
+        
+        <div class="quit-container">
+            <button type="button" class="btn-quit" onclick="showScreen('screen-start')">Quitter</button>
+        </div>
+    </div>
+
+    <div id="screen-feedback" class="screen">
+        <h2>Résultat de la manche</h2>
+        
+        <div class="score-progress-wrapper">
+            <div class="score-progress-text">
+                <span>Score total :</span>
+                <span id="score-bar-text-feedback">0 / 5000 pts</span>
+            </div>
+            <div class="score-progress-container">
+                <div id="score-bar-feedback" class="score-progress-bar"></div>
+            </div>
+        </div>
+
+        <div class="feedback-box">
+            <p>Votre estimation : <strong id="fb-guess">0</strong> kcal</p>
+            <p>Réponse exacte : <strong id="fb-exact">0</strong> kcal</p>
+        </div>
+        <p>Points gagnés sur ce round :</p>
+        <div class="score-display" id="fb-round-score">0</div>
+        <button onclick="nextRound()" id="btn-next">Continuer</button>
+    </div>
+
+    <div id="screen-end" class="screen">
+        <h1>Partie Terminée ! 🎉</h1>
+        <p>Votre score final :</p>
+        <div class="score-display" id="total-score" style="color: var(--score-color);">0 / 5000</div>
+        <p id="end-comment"></p>
+        <button onclick="showScreen('screen-start')">Retour au menu principal</button>
+    </div>
+
+</div>
+<script>
+let gameProducts=[], currentRound=0, totalScore=0, currentProduct=null, selectedDiff="normal";
+
+// Activer un écran (et désactiver les autres)
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// Choisir le niveau de difficulté
+function setDiff(level){
+  selectedDiff=level;
+  document.querySelectorAll('.difficulty-group button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn-diff-'+level).classList.add('active');
+}
+
+// Sélection de 5 éléments au hasard dans la page téléchargée
+function shuffle(arr){return arr.sort(()=>Math.random()-0.5)}
+
+// Préchargement d'une image
+function preloadImage(url) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    
+    // On résout dès que l'image est chargée OU en cas d'erreur
+    // (pour ne pas bloquer le jeu si une image est cassée)
+    img.onload = () => resolve();
+    img.onerror = () => {
+        console.error("Erreur de chargement pour :", url);
+        resolve(); // On résout quand même pour continuer le jeu
+    };
+  
+    img.src = url;
+  });
+}
+
+// Mise à jour de la barre de score
+function updateBars(){
+  const pct=Math.min((totalScore/5000)*100,100);
+  document.getElementById('score-bar-game').style.width=pct+'%';
+  document.getElementById('score-bar-feedback').style.width=pct+'%';
+}
+
+// Modification de la barre de statut (lors des chargements)
+function setStatus(msg){
+  document.getElementById('loading-status').innerText=msg;
+}
+
+async function fetchWithTimeout(url, ms=8000){
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),ms);
+  try{
+    const res=await fetch(url,{signal:ctrl.signal});
+    clearTimeout(timer);
+    return res;
+  }catch(e){
+    clearTimeout(timer);
+    throw e;
+  }
+}
+
+function URLBuilder(country, page) {
+
+  let url =
+    `https://world.openfoodfacts.org/cgi/search.pl?action=process` +
+    `&sort_by=unique_scans_n` +
+    `&page_size=20` +
+    `&page=${page}` +
+    `&json=true` +
+    `&fields=product_name,image_front_url,nutriments,brands` +
+    `&tagtype_3=nutriments&tag_contains_3=contains&tag_3=energy-kcal` +
+    `&tagtype_2=images&tag_contains_2=contains&tag_2=front`;
+
+  // Filtre 1 : Pays
+  if (country && country !== 'all') {
+    url += `&tagtype_1=countries&tag_contains_1=contains&tag_1=${country}`;
+  }
+
+  // Filtre 2 : Catégorie
+  // A FAAAAAAAAAAAAAAAAAAAAAAIRE
+
+  return url;
+}
+
+// Sélection d'un numéro de page aléatoire en fonction du niveau de difficulté
+function pickPage(){
+  if(selectedDiff==='easy') return Math.floor(Math.random()*25)+1;
+  if(selectedDiff==='hard') return Math.floor(Math.random()*151)+100;
+  return Math.floor(Math.random()*100)+1;
+}
+
+// Récupère des données
+async function fetchPage(country, page){
+  const url=URLBuilder(country,page);
+  const res=await fetchWithTimeout(url,10000);
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  const data=await res.json();
+  return data.products||[];
+}
+
+// Lancement du jeu
+async function startGame(){
+  currentRound=0; totalScore=0; gameProducts=[];
+  updateBars();
+
+  const country=document.getElementById('country-select').value;
+  const cats=Array.from(document.querySelectorAll('input[name="cat"]:checked')).map(cb=>cb.value);
+  const statusMessages = [
+  "Votre dose de gras arrive !",
+  "Le caddie se remplit gentiment.",
+  "Bouchage des artères en cours...",
+  "Tout plein de saloperies à manger !",
+  "Nous préparons votre burger sans salade.",
+  "LA CB12 ! C'EST POUR QUI LA CB12 ?",
+  "Tu vas te régaler, hein mon gourmand ?"];
+
+  setStatus(statusMessages[Math.floor(Math.random() * statusMessages.length)]);
+  showScreen('screen-loading');
+  
+
+  const maxRetries = 5;
+  let products = null;
+
+  try {
+    // 1. Tentatives de fetch avec retry
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const page = pickPage();
+        products = await fetchPage(country, page);
+
+        // si on a une réponse correcte, on sort
+        if (products && products.length) {
+          break;
+        }
+
+      } catch (e) {
+        console.warn(`Tentative ${attempt} échouée`, e);
+      }
+
+      // petit délai optionnel pour éviter de spam l'API
+      await new Promise(res => setTimeout(res, 300));
+    }
+
+    // 2. Si toujours rien après retries
+    if (!products || !products.length) {
+      document.getElementById('error-details').innerText =
+        `Impossible de charger les produits après ${maxRetries} tentatives.`;
+
+      showScreen('screen-error');
+      return;
+    }
+
+    // 3. Prendre 5 produits aléatoires
+    const selection = shuffle(products).slice(0, 5);
+
+    // 4. Mapping
+    gameProducts = selection.map(p => ({
+      name: p.product_name_fr || p.product_name,
+      brand: (p.brands || '').split(',')[0].trim(),
+      image: p.image_front_url,
+      calories: Math.round(p.nutriments?.['energy-kcal_100g'] || 0)
+    }));
+
+  } catch (e) {
+    console.error('StartGame fatal error:', e);
+
+    document.getElementById('error-details').innerText =
+      `Erreur inattendue lors du chargement.`;
+
+    showScreen('screen-error');
+  }
+
+  //chargement première image
+  await preloadImage(gameProducts[0].image);
+  loadRound();
+  startPreload();
+}
+
+// Charger une manche de jeu
+function loadRound() {
+  currentProduct = gameProducts[currentRound];
+
+  // Mise à jour de l'interface
+  document.getElementById('game-progress').innerText = `Round ${currentRound + 1} / 5`;
+  document.getElementById('product-name').innerText = currentProduct.name;
+  document.getElementById('product-brand').innerText = currentProduct.brand;
+  document.getElementById('user-guess').value = '';
+
+  const img = document.getElementById('product-image');
+
+  // masque immédiatement l'image (spinner visible dessous)
+  img.classList.remove('loaded');
+
+  // préchargement contrôlé (évite affichage de l'ancienne image)
+  const newImg = new Image();
+
+  newImg.onload = () => {
+    img.src = newImg.src;
+    img.classList.add('loaded'); // affiche l'image uniquement quand prête
+  };
+
+  newImg.src = currentProduct.image;
+
+  showScreen('screen-game');
+
+  setTimeout(() => document.getElementById('user-guess').focus(), 100);
+
+  // On pré-télécharge l'image du prochain round en arrière-plan
+  const nextRound = currentRound + 1;
+  if (nextRound < gameProducts.length) {
+    console.log(`Préchargement silencieux du round ${nextRound + 1}...`);
+    preloadImage(gameProducts[nextRound].image);
+  }
+}
+
+// Valider sa réponse
+function validateGuess(){
+  const val=parseFloat(document.getElementById('user-guess').value);
+  if(isNaN(val)||val<0){alert("Entrez une estimation valide.");return;}
+  const exact=currentProduct.calories;
+  const diff=Math.abs(exact-val);
+  const base=Math.max(exact,100);
+  let pts=Math.round(((base-diff)/base)*1000);
+  if(pts<0) pts=0;
+  totalScore+=pts;
+  updateBars();
+  document.getElementById('fb-guess').innerText=val;
+  document.getElementById('fb-exact').innerText=exact;
+  document.getElementById('fb-round-score').innerText='+'+pts+' pts';
+  document.getElementById('btn-next').innerText=(currentRound===4)?'Voir le score final':'Continuer';
+  showScreen('screen-feedback');
+}
+
+// Passer au round suivant
+function nextRound(){
+  currentRound++;
+  if(currentRound<5) loadRound();
+  else endGame();
+}
+
+// Fin de la partie
+function endGame(){
+  document.getElementById('total-score').innerText=totalScore+' / 5000';
+  let comment='';
+  if(totalScore>=4990) comment="Dieu prie pour avoir un jour ton niveau. Amen. ✞";
+  else if(totalScore>=4900) comment="Incroyable. Divin. Magique. Splendide. Bravissimo ! 😍";
+  else if(totalScore>=4500) comment="Excpetionnel, un maestro de la graisse ! 🧈";
+  else if(totalScore>=4000) comment="Impresionnant. Quel fin gourmet. 🥗";
+  else if(totalScore>=3000) comment="Très bon score, tu gères bien tes portions. 🥗";
+  else if(totalScore>=2000) comment="Des erreurs, mais la sélection n'était pas facile ! 💥";
+  else if(totalScore>=1500) comment="Tu mérites la médaille en chocolat. 🥉";
+  else if(totalScore>=1000) comment="Mon doberman a fait un meilleur score. 🐶";
+  else if(totalScore>=500) comment="C'est catastrophique. Gros lardon. 🐖";
+  else comment="Nul à chier. 💩";
+  document.getElementById('end-comment').innerText=comment;
+  showScreen('screen-end');
+}
+
+// Préchargement des images 2 à 5 
+function startPreload() {
+
+  // on commence à 1 car 0 est déjà chargé
+  for (let i = 1; i < gameProducts.length; i++) {
+    const url = gameProducts[i].image;
+    if (!url) continue;
+
+    const img = new Image();
+    img.src = url;
+  }
+}
+
+</script>
+</body>
+</html>
