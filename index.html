@@ -25,7 +25,6 @@
             justify-content: center;
             align-items: center;
             min-height: 100dvh;
-            /* Ajout des règles de dépassement */
             width: 100vw;
             overflow: auto;
         }
@@ -102,35 +101,6 @@
             outline: none;
         }
 
-        .difficulty-group {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .difficulty-group button {
-            flex: 1;
-            background-color: #E5E7EB;
-            color: var(--text-muted);
-            padding: 0.6rem 0.2rem;
-            font-size: 0.85rem;
-            font-weight: 700;
-            border-radius: 8px;
-            margin-top: 0;
-            width: auto;
-            transition: all 0.2s ease;
-            border: 2px solid transparent;
-        }
-
-        .difficulty-group button:hover {
-            background-color: #D1D5DB;
-        }
-
-        .difficulty-group button.active {
-            background-color: var(--primary);
-            color: white;
-        }
-
         .quit-container {
             display: flex;
             justify-content: flex-end;
@@ -154,38 +124,6 @@
         .btn-quit:hover {
             background: none;
             color: var(--error);
-        }
-
-        .categories-title {
-            text-align: left;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .categories-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-            text-align: left;
-        }
-
-        .category-item {
-            display: flex;
-            align-items: center;
-            background: #F9FAFB;
-            padding: 0.5rem;
-            border-radius: 6px;
-            border: 1px solid #E5E7EB;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .category-item input {
-            margin-right: 0.5rem;
-            accent-color: var(--primary);
         }
 
         .score-progress-wrapper {
@@ -349,59 +287,31 @@
     </style>
 </head>
 <body>
-
 <div id="game-container">
     
     <div id="screen-start" class="screen active">
         <h1>Be My Graisse 🍖</h1>
         <p>Devinez les calories de 5 aliments piochés au hasard selon vos préférences !</p>
-        
-        <div class="select-wrapper">
-            <label>Niveau de difficulté :</label>
-            <div class="difficulty-group">
-                <button type="button" id="btn-diff-easy" onclick="setDiff('easy')">👶 Facile</button>
-                <button type="button" id="btn-diff-normal" class="active" onclick="setDiff('normal')">⚖️ Normal</button>
-                <button type="button" id="btn-diff-hard" onclick="setDiff('hard')">🌶️ Difficile</button>
-            </div>
-        </div>
 
         <div class="select-wrapper">
-            <label for="country-select">Origine des aliments (fonctionnalité pas testée) :</label>
+            <label for="country-select">Pays dans lequel les aliments sont disponibles :</label>
             <select id="country-select">
                 <option value="all">🌍 Tous (Monde entier)</option>
-                <option value="cc:fr">🇫🇷 France</option>
-                <option value="cc:be">🇧🇪 Belgique</option>
-                <option value="cc:ch">🇨🇭 Suisse</option>
-                <option value="cc:ca">🇨🇦 Canada</option>
-                <option value="cc:us">🇺🇸 États-Unis</option>
-                <option value="cc:de">🇩🇪 Allemagne</option>
-                <option value="cc:it">🇮🇹 Italie</option>
-                <option value="cc:es">🇪🇸 Espagne</option>
-                <option value="cc:gb">🇬🇧 Royaume-Uni</option>
-                <option value="cc:nl">🇳🇱 Pays-Bas</option>
-                <option value="cc:pt">🇵🇹 Portugal</option>
-                <option value="cc:jp">🇯🇵 Japon</option>
-                <option value="cc:mx">🇲🇽 Mexique</option>
-                <option value="cc:br">🇧🇷 Brésil</option>
-                <option value="cc:ma">🇲🇦 Maroc</option>
-                <option value="cc:dz">🇩🇿 Algérie</option>
-                <option value="cc:tn">🇹🇳 Tunisie</option>
-                <option value="cc:sen">🇸🇳 Sénégal</option>
-                <option value="cc:ci">🇨🇮 Côte d'Ivoire</option>
-                <option value="cc:au">🇦🇺 Australie</option>
+                <option value="france">🇫🇷 France</option>
+                <option value="belgium">🇧🇪 Belgique</option>
+                <option value="switzerland">🇨🇭 Suisse</option>
+                <option value="canada">🇨🇦 Canada</option>
+                <option value="united-states">🇺🇸 États-Unis</option>
+                <option value="germany">🇩🇪 Allemagne</option>
+                <option value="italy">🇮🇹 Italie</option>
+                <option value="spain">🇪🇸 Espagne</option>
+                <option value="united-kingdom">🇬🇧 Royaume-Uni</option>
+                <option value="netherlands">🇳🇱 Pays-Bas</option>
+                <option value="portugal">🇵🇹 Portugal</option>
+                <option value="japan">🇯🇵 Japon</option>
+                <option value="mexico">🇲🇽 Mexique</option>
+                <option value="australia">🇦🇺 Australie</option>
             </select>
-        </div>
-
-        <div class="categories-title">Catégories incluses (choisis ce que tu veux, ça marche pas) :</div>
-        <div class="categories-grid">
-            <label class="category-item"><input type="checkbox" name="category" value="en:beverages" checked> 🥤 Boissons</label>
-            <label class="category-item"><input type="checkbox" name="category" value="en:sweet-snacks" checked> 🍫 Snacks sucrés</label>
-            <label class="category-item"><input type="checkbox" name="category" value="en:salty-snacks" checked> 🥨 Snacks salés</label>
-            <label class="category-item"><input type="checkbox" name="category" value="en:dairies" checked> 🧀 P. Laitiers</label>
-            <label class="category-item"><input type="checkbox" name="category" value="en:meats" checked> 🥩 Viandes</label>
-            <label class="category-item"><input type="checkbox" name="category" value="en:fruits" checked> 🍎 Fruits</label>
-            <label class="category-item"><input type="checkbox" name="category" value="en:vegetables" checked> 🥕 Légumes</label>
-            <label class="category-item"><input type="checkbox" name="category" value="en:meals" checked> 🍕 Plats préparés</label>
         </div>
 
         <button onclick="startGame()">C'est parti !</button>
@@ -472,19 +382,32 @@
 
 </div>
 <script>
-let gameProducts=[], currentRound=0, totalScore=0, currentProduct=null, selectedDiff="normal";
+let gameProducts=[], currentRound=0, totalScore=0, currentProduct=null;
 
-// Activer un écran (et désactiver les autres)
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+
+  // On retire systématiquement tout avant de décider quoi ajouter
+  document.removeEventListener('keydown', handleEnterKey);
+
+  // Le setTimeout(..., 0) décale l'ajout au prochain cycle, 
+  // ce qui évite que l'appui qui a déclenché le changement ne soit réutilisé
+  if (id === 'screen-feedback') {
+    setTimeout(() => document.addEventListener('keydown', handleEnterKey), 0);
+  }
 }
 
-// Choisir le niveau de difficulté
-function setDiff(level){
-  selectedDiff=level;
-  document.querySelectorAll('.difficulty-group button').forEach(b=>b.classList.remove('active'));
-  document.getElementById('btn-diff-'+level).classList.add('active');
+function handleEnterKey(event) {
+    if (event.key !== 'Enter') return;
+
+    // Utilisation d'une propriété statique sur la fonction pour stocker le timestamp
+    const now = Date.now();
+    if (now - (handleEnterKey.lastExecution || 0) < 500) return; // 500ms de sécurité
+    handleEnterKey.lastExecution = now;
+
+    // Ton code existant
+    nextRound();
 }
 
 // Sélection de 5 éléments au hasard dans la page téléchargée
@@ -540,26 +463,18 @@ function URLBuilder(country, page) {
     `&page_size=20` +
     `&page=${page}` +
     `&json=true` +
-    `&fields=product_name,image_front_url,nutriments,brands` +
-    `&tagtype_3=nutriments&tag_contains_3=contains&tag_3=energy-kcal` +
-    `&tagtype_2=images&tag_contains_2=contains&tag_2=front`;
+    `&fields=product_name,image_front_url,nutriments.energy-kcal_100g,brands,countries_tags` +
+    `&states_tags=product-name-completed` +
+    `&states_tags=energy-kcal_100g-completed` ;
 
   // Filtre 1 : Pays
-  if (country && country !== 'all') {
-    url += `&tagtype_1=countries&tag_contains_1=contains&tag_1=${country}`;
+  if (country !== 'all') {
+    url += `&tagtype_0=countries_tags&tag_contains_0=contains&tag_0=en:${country}`;
   }
 
-  // Filtre 2 : Catégorie
-  // A FAAAAAAAAAAAAAAAAAAAAAAIRE
+  console.log(url)
 
   return url;
-}
-
-// Sélection d'un numéro de page aléatoire en fonction du niveau de difficulté
-function pickPage(){
-  if(selectedDiff==='easy') return Math.floor(Math.random()*25)+1;
-  if(selectedDiff==='hard') return Math.floor(Math.random()*151)+100;
-  return Math.floor(Math.random()*100)+1;
 }
 
 // Récupère des données
@@ -577,28 +492,27 @@ async function startGame(){
   updateBars();
 
   const country=document.getElementById('country-select').value;
-  const cats=Array.from(document.querySelectorAll('input[name="cat"]:checked')).map(cb=>cb.value);
   const statusMessages = [
   "Votre dose de gras arrive !",
   "Le caddie se remplit gentiment.",
   "Bouchage des artères en cours...",
   "Tout plein de saloperies à manger !",
   "Nous préparons votre burger sans salade.",
-  "LA CB12 ! C'EST POUR QUI LA CB12 ?",
+  "COMMANDE CB49 ! C'EST POUR QUI LA CB49 ?",
   "Tu vas te régaler, hein mon gourmand ?"];
 
   setStatus(statusMessages[Math.floor(Math.random() * statusMessages.length)]);
   showScreen('screen-loading');
   
 
-  const maxRetries = 5;
+  const maxRetries = 10;
   let products = null;
 
   try {
     // 1. Tentatives de fetch avec retry
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        const page = pickPage();
+        const page = Math.floor(Math.random()*500)+1;
         products = await fetchPage(country, page);
 
         // si on a une réponse correcte, on sort
